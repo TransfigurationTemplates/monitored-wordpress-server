@@ -1,0 +1,14 @@
+- name: Run Cadvisor
+  include: cadvisor.yml
+
+- name: Run VictoriaMetrics
+  include: victoriametrics.yml
+
+- name: Run NodeExporter
+  include: nodeexporter.yml
+
+- name: Run Prometheus
+  include: prom.yml
+
+- name: Run Grafana
+  include: grafana.yml

@@ -1,0 +1,97 @@
+- name: Create Data Directory For Grafana
+  file:
+    path: "{{ container_data_dir }}/grafana"
+    state: directory
+    recurse: yes
+  tags:
+    - grafana
+    - grafana_dir
+    - create_dirs
+
+- name: Create Provisioning Directory For Grafana
+  file:
+    path: "{{ container_data_dir }}/grafana/provisioning"
+    state: directory
+    recurse: yes
+  tags:
+    - grafana
+    - grafana_dir
+    - create_dirs
+
+- name: Create Dashboards Directory For Grafana
+  file:
+    path: "{{ container_data_dir }}/grafana/provisioning/dashboards"
+    state: directory
+    recurse: yes
+  tags:
+    - grafana
+    - grafana_dir
+    - create_dirs
+
+- name: Create Datasources Directory For Grafana
+  file:
+    path: "{{ container_data_dir }}/grafana/provisioning/datasources"
+    state: directory
+    recurse: yes
+  tags:
+    - grafana
+    - grafana_dir
+    - create_dirs
+
+- name: Copy the Datasource file to the system
+  copy:
+    src: "grafana-prometheus.yml"
+    dest: "{{ container_data_dir }}/grafana/provisioning/datasources/datasource.yml"
+    remote_src: no
+  tags:
+    - grafana
+    - grafana_dir
+    - create_dirs
+
+- name: Copy the Dashboard file to the system
+  copy:
+    src: "grafana-prometheus-dashboard.json"
+    dest: "{{ container_data_dir }}/grafana/provisioning/dashboards/grafana-prometheus-dashboard.json"
+    remote_src: no
+  tags:
+    - grafana
+    - grafana_dir
+    - create_dirs
+
+- name: Copy the Dashboard file to the system
+  copy:
+    src: "grafana-prometheus-dashboard.yml"
+    dest: "{{ container_data_dir }}/grafana/provisioning/dashboards/dashboard.yml"
+    remote_src: no
+  tags:
+    - grafana
+    - grafana_dir
+    - create_dirs
+
+- name: Run Grafana Container
+  docker_container:
+    hostname: grafana
+    name: grafana
+    image: grafana/grafana
+    state: started
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+      - name: "{{ traefik_docker_network }}"
+    labels:
+      traefik.backend: "grafana"
+      traefik.frontend.rule: "Host:grafana.{{ traefik_domain }}"
+      traefik.docker.network: "{{ traefik_docker_network }}"
+      traefik.port: "3000"
+    user: '0'
+    env:
+      GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"
+      GF_INSTALL_PLUGINS: ""
+      GF_PATHS_PROVISIONING: "/var/lib/grafana/provisioning"
+    published_ports:
+      - 3000:3000
+    volumes:
+      - "{{ container_data_dir }}/grafana:/var/lib/grafana"
+    restart_policy: unless-stopped
+  tags:
+    - grafana
+    - grafana_container

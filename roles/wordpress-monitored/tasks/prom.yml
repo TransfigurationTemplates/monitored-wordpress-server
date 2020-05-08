@@ -1,0 +1,49 @@
+- name: Create Data Directory For Prometheus
+  file:
+    path: "{{ container_data_dir }}/prometheus"
+    state: directory
+    recurse: yes
+  tags:
+    - prometheus
+    - prometheus_dir
+    - create_dirs
+    - monitoring
+
+- name: Copy Prometheus Configruation File
+  copy:
+    src: "prometheus-config.yml"
+    dest: "{{ container_data_dir }}/prometheus/prometheus.yml"
+    remote_src: no
+  tags:
+    - prometheus
+    - prometheus_config
+    - monitoring
+
+- name: Run Prometheus Container
+  docker_container:
+    hostname: prometheus
+    name: prometheus
+    image: prom/prometheus
+    state: started
+    user: '0'
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+      - name: "{{ traefik_docker_network }}"
+    labels:
+      traefik.backend: "prometheus"
+      traefik.frontend.rule: "Host:prom.{{ traefik_domain }}"
+      traefik.docker.network: "{{ traefik_docker_network }}"
+      traefik.port: "9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/etc/prometheus/data
+      - --storage.tsdb.retention.time=5d
+    published_ports:
+      - 9090:9090
+    volumes:
+      - "{{ container_data_dir }}/prometheus:/etc/prometheus"
+    restart_policy: unless-stopped
+  tags:
+    - prometheus
+    - prometheus_container
+    - monitoring

@@ -1,0 +1,11 @@
+- name: Create a network for Traefik
+  docker_network:
+    name: "{{ traefik_docker_network }}"
+  tags:
+    - traefik
+
+- name: Create metrics network
+  docker_network:
+    name: "{{ monitoring_docker_network }}"
+  tags:
+    - monitoring

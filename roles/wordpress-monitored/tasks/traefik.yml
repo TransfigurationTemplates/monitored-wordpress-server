@@ -1,0 +1,58 @@
+- name: Create Data Directory for Traefik
+  file:
+    path: "{{ container_data_dir }}/traefik"
+    state: directory
+    recurse: yes
+  tags:
+    - traefik
+    - traefik_dir
+    - create_dirs
+
+- name: Check if acme.json file for Traefik Exists
+  stat:
+    path: "{{ container_data_dir }}/traefik/acme.json"
+  register: acme_check
+  tags:
+    - traefik
+    - acme
+
+- name: Create acme.json file for Traefik
+  file:
+    path: "{{ container_data_dir }}/traefik/acme.json"
+    state: touch
+    mode: 0600
+  when: acme_check.stat.exists == false
+  tags:
+    - traefik
+    - acme
+
+- name: Create traefik.toml file
+  template:
+    src: traefik.toml.j2
+    dest: "{{ container_data_dir }}/traefik/traefik.toml"
+  tags:
+    - traefik
+    - traefik_config
+
+- name: Start Traefik container
+  docker_container:
+    hostname: traefik
+    name: traefik
+    image: traefik:v1.7.6-alpine
+    state: started
+    networks:
+      - name: "{{ traefik_docker_network }}"
+    published_ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "{{ container_data_dir }}/traefik/traefik.toml:/traefik.toml"
+      - "{{ container_data_dir }}/traefik/acme.json:/acme.json"
+    labels:
+      traefik.frontend.rule: "Host:monitor.{{ traefik_domain }}"
+      traefik.port: "8080"
+    restart_policy: unless-stopped
+  tags:
+    - traefik
+    - traefik_container

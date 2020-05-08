@@ -1,0 +1,22 @@
+- name: Run NodeExporter Container
+  docker_container:
+    name: nodeexporter
+    hostname: nodeexporter
+    image: quay.io/prometheus/node-exporter
+    state: started
+    pid_mode: "host"
+    # network_mode: "host"
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+    labels:
+      traefik.enable: "false"
+    command: 
+      - "--path.rootfs=/host"
+    published_ports:
+      - 9100:9100
+    volumes:
+      - "/:/host:ro,rslave"
+    restart_policy: unless-stopped
+  tags:
+    - nodeexporter
+    - monitoring

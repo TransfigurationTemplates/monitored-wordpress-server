@@ -1,0 +1,35 @@
+- name: Set Hostname of Server
+  hostname:
+    name: '{{ server_hostname }}'
+
+- name: Install Software Packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages: '{{ server_software }}'
+
+- name: configure services
+  service:
+    state: "{{ item.state}}"
+    enabled: "{{ item.enabled }}"
+    name: "{{ item.name }}"
+  with_items: "{{ service_control }}"
+
+- name: Install pip
+  easy_install:
+    name: pip
+    state: latest
+
+- name: allow files to be written to by docker containers
+  become: true
+  command: su -c "setenforce 0" 
+
+- name: Install docker with pip
+  pip:
+    name: docker
+    state: present
+    extra_args: --ignore-installed
+
+- name: Create Docker Networks
+  include: docker-networks.yml

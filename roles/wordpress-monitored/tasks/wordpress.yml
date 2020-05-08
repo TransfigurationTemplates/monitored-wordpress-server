@@ -1,0 +1,83 @@
+- name: Create Data Directory For MySQL
+  file:
+    path: "{{ container_data_dir }}/mysql/"
+    state: directory
+    recurse: yes
+  tags:
+    - mysql
+    - mysql_dir
+    - create_dirs
+    - wordpress
+
+- name: Create DB Directory For MySQL
+  file:
+    path: "{{ container_data_dir }}/mysql/db"
+    state: directory
+    recurse: yes
+  tags:
+    - mysql
+    - mysql_dir
+    - create_dirs
+    - wordpress
+
+- name: Create DB Directory For Wordpress
+  file:
+    path: "{{ container_data_dir }}/wordpress"
+    state: directory
+    recurse: yes
+  tags:
+    - wordpress_dir
+    - create_dirs
+    - wordpress
+
+- name: Run Mysql Container
+  docker_container:
+    hostname: mysql
+    name: mysql
+    image: mysql:5.7
+    state: started
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+      - name: "{{ traefik_docker_network }}"
+    labels:
+      traefik.enable: "false"
+    env:
+      MYSQL_DATABASE: "{{ mysql_db_name | default('wordpressdb') }}"
+      MYSQL_USER: "{{ mysql_db_user | default('wordpressdbuser') }}"
+      MYSQL_PASSWORD: "{{ mysql_db_password | default('wordpressdbpass') }}"
+      MYSQL_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - "{{ container_data_dir }}/mysql/db:/var/lib/mysql"
+    restart_policy: unless-stopped
+  tags:
+    - mysql
+    - mysql_container
+    - wordpress
+
+- name: Run Wordpress Container
+  docker_container:
+    hostname: wordpress
+    name: wordpress
+    image: wordpress
+    state: started
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+      - name: "{{ traefik_docker_network }}"
+    labels:
+      traefik.backend: "wordpress"
+      traefik.frontend.rule: "Host:{{ wordpress_dns_name | default('wordpress.{{ traefik_domain }}') }}"
+      traefik.docker.network: "{{ traefik_docker_network }}"
+      traefik.port: "80"
+    env:
+      WORDPRESS_DB_NAME: "{{ mysql_db_name | default('wordpressdb') }}"
+      WORDPRESS_DB_USER: "{{ mysql_db_user | default('wordpressdbuser') }}"
+      WORDPRESS_DB_PASSWORD: "{{ mysql_db_password | default('wordpressdbpass') }}"
+      WORDPRESS_DB_HOST: "mysql:3306"
+    volumes:
+      - "{{ container_data_dir }}/wordpress:/var/www/html"
+    published_ports:
+      - 8392:80
+    restart_policy: unless-stopped
+  tags:
+    - wordpress
+    - wordpress_container

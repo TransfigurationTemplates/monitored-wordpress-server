@@ -1,0 +1,31 @@
+- name: Create Data Directory For VictoriaMetrics
+  file:
+    path: "{{ container_data_dir }}/victoriametrics"
+    state: directory
+    recurse: yes
+  tags:
+    - victoriametrics
+    - victoriametrics_dir
+    - create_dirs
+    - monitoring
+
+- name: Run VictoriaMetrics Container
+  docker_container:
+    name: victoriametrics
+    hostname: victoriametrics
+    image: victoriametrics/victoria-metrics
+    state: started
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+      - name: "{{ traefik_docker_network }}"
+    labels:
+      traefik.enable: "false"
+    published_ports:
+      - 8428:8428
+    volumes:
+      -  "{{ container_data_dir }}/victoriametrics:/victoria-metrics-data"
+    restart_policy: unless-stopped
+  tags:
+    - victoriametrics
+    - victoriametrics_container
+    - monitoring

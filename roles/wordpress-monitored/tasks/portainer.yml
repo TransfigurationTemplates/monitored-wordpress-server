@@ -1,0 +1,34 @@
+- name: Create Data Directory For Portainer
+  file:
+    path: "{{ container_data_dir }}/portainer"
+    state: directory
+    recurse: yes
+  tags:
+    - portainer
+    - portainer_dir
+    - create_dirs
+
+- name: Run Portainer Container
+  docker_container:
+    name: portainer
+    hostname: portainer
+    image: portainer/portainer
+    state: started
+    privileged: yes
+    published_ports:
+      - 9000:9000
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+      - name: "{{ traefik_docker_network }}"
+    labels:
+      traefik.backend: "portainer"
+      traefik.frontend.rule: "Host:port.{{ traefik_domain }}"
+      traefik.docker.network: "{{ traefik_docker_network }}"
+      traefik.port: "9000"
+    volumes:
+      - /data/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart_policy: unless-stopped
+  tags:
+    - portainer
+    - portainer_container

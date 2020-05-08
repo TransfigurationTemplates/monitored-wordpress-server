@@ -1,0 +1,29 @@
+- name: Run Setup
+  include: setup.yml
+  tags:
+    - setup
+    - init
+
+- name: Run Portainer
+  include: portainer.yml
+  tags:
+    - portainer
+    - init
+
+- name: Run Traefik
+  include: traefik.yml
+  tags:
+    - traefik
+    - init
+
+- name: Run Monitoring
+  include: monitoring.yml
+  tags:
+    - monitoring
+    - init
+
+- name: Run Wordpress
+  include: wordpress.yml
+  tags:
+    - wordpress
+    - init

@@ -1,0 +1,32 @@
+defaultEntryPoints = ["http", "https"]
+
+[entryPoints]
+  [entryPoints.dashboard]
+    address = ":8080"
+    [entryPoints.dashboard.auth]
+      [entryPoints.dashboard.auth.basic]
+        users = ["{{ traefik_htpasswd }}"]
+
+[api]
+entrypoint="dashboard"
+
+  [entryPoints.http]
+    address = ":80"
+      [entryPoints.http.redirect]
+        entryPoint = "https"
+  [entryPoints.https]
+    address = ":443"
+      [entryPoints.https.tls]
+
+[acme]
+email = "{{ traefik_ssl_email }}"
+storage = "acme.json"
+entryPoint = "https"
+onHostRule = true
+  [acme.httpChallenge]
+  entryPoint = "http"
+
+[docker]
+domain = "{{ traefik_domain }}"
+watch = true
+network = "{{ traefik_docker_network }}"

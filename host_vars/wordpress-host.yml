@@ -1,0 +1,98 @@
+# Default file for traefik ansible role
+# Descriptions of each variable with any
+# relevant information is above each variable
+# and in the README.md of the role and Main README.md
+
+# Default Data directory
+# If not specified it will be the default "/data
+# as below. Do not add the trailing slash to the directory path.
+# It will be the same variable for all container data root directory
+# and for backup purposes.
+# Type: String
+container_data_dir: "/data"
+
+# The Docker network name for the monitoring
+# If not specfied it will be the default "monitoring"
+# as below.
+# Type: String
+monitoring_docker_network: "monitoring"
+
+# The Docker network name for traefik
+# If not specified it will be the default "web"
+# as below.
+# Type: String
+traefik_docker_network: "web"
+
+# Email address for SSL LETSENCRYPT Certificate. Example:
+# traefik_ssl_email: "myemail@domain.com"
+# Type: String
+traefik_ssl_email: "admin@superfunexample.com"
+
+# Generate this in the command line with:
+# htpasswd -nb admin <secure password here> 
+# copy and paste the whole line. Example:
+# traefik_htpasswd: "admin:$apr1$va9tfGe/$nSp81qFFKipex3wmN9Q3s."
+# Type: String
+traefik_htpasswd: "admin:$apr1$Mdvoz4yk$Vynt2yMOaFA21aXuC.tAz/"
+
+# Your Domain. Example:
+# traefik_domain: "happyfuntime.com"
+# Type: String
+traefik_domain: "superfunexample.com"
+
+# Grafana Admin User Password. Example:
+# grafana_admin_password: "secretawesomepassword"
+# Type: String
+grafana_admin_password: "thisshitissecureasfuck"
+
+# Your desired server hostname. Example:
+# server_hostname: "wordpress-server"
+# Type: String
+server_hostname: "wordpress-server"
+
+# List of software to install to ensure that all required packages are installed
+# you can add to this list or simply use the below default if necessary.
+# If you add to this list, copy and paste the below list into your host_vars file
+# and add to it to avoid any issues.
+# Type: List
+server_software:
+  - '@development'
+  - nano
+  - docker
+  - python3
+  - wget
+  - epel-release
+
+# list of services and if you are enabling or disabling them. You can 
+# add to this list or use the default as below, if you add to this list,
+# copy and paste the below list into your host_vars file and add to 
+# it to avoid any issues.
+# Type: Dictionary
+service_control:
+  - { state: "started", enabled: "yes", name: "docker" }
+
+
+# Wordpress MySQL DB Name
+# Default value if not defined: "wordpressdb"
+# mysql_db_name: "exampledbname"
+# Type: String
+# mysql_db_name: ""
+
+# Wordpress MySQL DB Username
+# Default value if not defined: "wordpressdbuser"
+# mysql_db_user: "administrator-rex"
+# Type: String
+# mysql_db_user: ""
+
+# Wordpress MySQL DB Password
+# Default value if not defined: "wordpressdbpass"
+# mysql_db_password: "I'm a secret that should probably be in an ansible vault variable."
+# Type: String
+# mysql_db_password: ""
+
+# DNS Name if you want to direct your site like blah.com instead of a subdomain to the main domain.
+# Example: wordpress_dns_name: "coolweblog.com"
+# Default value if not defined: wordpress.{{ traefik_domain }}
+# If we use the example above for this variable it would be "wordpress.happyfuntime.com"
+# Type: String
+wordpress_dns_name: "www.{{ traefik_domain }}"

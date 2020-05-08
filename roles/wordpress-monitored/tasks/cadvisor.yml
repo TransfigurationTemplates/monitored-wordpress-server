@@ -1,0 +1,47 @@
+- name: allow cadvisor to find the right file
+  become: true
+  command: mount -o remount,rw '/sys/fs/cgroup'
+  tags:
+    - cadvisor
+    - monitoring
+    - cadvisor_permissions
+
+- name: Check if linked file for Cadvisory exists
+  stat:
+    path: "/sys/fs/cgroup/cpuacct,cpu"
+  register: link_check
+  tags:
+    - cadvisor
+    - cadvisor_permissions
+
+- name: allow cadvisor to find the right file
+  become: true
+  command: ln -s /sys/fs/cgroup/cpu,cpuacct /sys/fs/cgroup/cpuacct,cpu
+  when: link_check.stat.exists == false
+  tags:
+    - cadvisor
+    - monitoring
+    - cadvisor_permissions
+
+- name: Run cadvisor container
+  docker_container:
+    hostname: cadvisor
+    name: cadvisor
+    image: google/cadvisor
+    state: started
+    networks:
+      - name: "{{ monitoring_docker_network }}"
+    labels:
+      traefik.enable: "false"
+    published_ports:
+      - 8456:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    restart_policy: unless-stopped
+  tags:
+    - cadvisor
+    - monitoring
+    - cadvisor_container

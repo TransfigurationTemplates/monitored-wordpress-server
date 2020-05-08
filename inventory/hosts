@@ -1,2 +1,2 @@
-[webservers]
+[webserver]
 wordpress-host ansible_host=IP GOES HERE

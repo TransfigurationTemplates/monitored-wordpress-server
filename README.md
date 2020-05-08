@@ -18,6 +18,10 @@
 
 This deployment is designed to be used on CentOS 7. It is a full server configuration designed for running and monitoring/managing a wordpress server. It will be securely serving traffic with automatic ssl renewal. There will be long time performance metrics gathered ( 1month ) so you can see how the servers performance compares to the past. This is helpful in knowing when you may be exceeding the capabilities of your server and need to scale up the infrastructure. In future updates there will be alerting and monitoring configured to alert you before things become a problem via various methods such as slack or email. This way you can provide the best available infrastructure to fit you and your users needs in a way that saves you some time. Not me so much cause I wrote this. lol.
 
+## Architecture Overview
+
+![](/docs/images/wordpresshost.png)
+
 ## What can I expect this thing to even do?
 
 When you deploy this playbook using the steps in the section [How Do I Work This Thing?](#how-do-i-work-this-thing) you can expect the following things to accessible. In the below example we'll consider the following variables to be set in the host variables:

@@ -42,9 +42,9 @@
     labels:
       traefik.enable: "false"
     env:
-      MYSQL_DATABASE: "{{ mysql_db_name | default('wordpressdb') }}"
-      MYSQL_USER: "{{ mysql_db_user | default('wordpressdbuser') }}"
-      MYSQL_PASSWORD: "{{ mysql_db_password | default('wordpressdbpass') }}"
+      MYSQL_DATABASE: "{{ mysql_db_name }}"
+      MYSQL_USER: "{{ mysql_db_user }}"
+      MYSQL_PASSWORD: "{{ mysql_db_password }}"
       MYSQL_RANDOM_ROOT_PASSWORD: "1"
     volumes:
       - "{{ container_data_dir }}/mysql/db:/var/lib/mysql"
@@ -65,13 +65,13 @@
       - name: "{{ traefik_docker_network }}"
     labels:
       traefik.backend: "wordpress"
-      traefik.frontend.rule: "Host:{{ wordpress_dns_name | default('wordpress.{{ traefik_domain }}') }}"
+      traefik.frontend.rule: "Host:{{ wordpress_dns_name }}"
       traefik.docker.network: "{{ traefik_docker_network }}"
       traefik.port: "80"
     env:
-      WORDPRESS_DB_NAME: "{{ mysql_db_name | default('wordpressdb') }}"
-      WORDPRESS_DB_USER: "{{ mysql_db_user | default('wordpressdbuser') }}"
-      WORDPRESS_DB_PASSWORD: "{{ mysql_db_password | default('wordpressdbpass') }}"
+      WORDPRESS_DB_NAME: "{{ mysql_db_name }}"
+      WORDPRESS_DB_USER: "{{ mysql_db_user }}"
+      WORDPRESS_DB_PASSWORD: "{{ mysql_db_password }}"
       WORDPRESS_DB_HOST: "mysql:3306"
     volumes:
       - "{{ container_data_dir }}/wordpress:/var/www/html"

@@ -71,28 +71,28 @@ server_software:
 service_control:
   - { state: "started", enabled: "yes", name: "docker" }
 
-
+ 
 # Wordpress MySQL DB Name
 # Default value if not defined: "wordpressdb"
 # mysql_db_name: "exampledbname"
 # Type: String
-# mysql_db_name: ""
+mysql_db_name: "wordpressdb"
 
 # Wordpress MySQL DB username
 # Default value if not defined: "wordpressdbuser"
 # mysql_db_user: "administrator-rex"
 # Type: String
-# mysql_db_user: ""
+mysql_db_user: "wordpressdbuser"
 
 # Wordpress MySQL DB username
 # Default value if not defined: "wordpressdbpass"
 # mysql_db_password: "I'm a secret that should probably be in an ansible vault variable."
 # Type: String
-# mysql_db_password: ""
+mysql_db_password: "wordpressdbpass"
 
 # DNS Name if you want to direct your site like blah.com instead of a subdomain to the main domain.
 # Example: wordpress_dns_name: "coolweblog.com"
 # Default value: wordpress.{{ traefik_domain }}
 # If we use the example above for this variable it would be "wordpress.happyfuntime.com"
 # Type: String
-wordpress_dns_name: ""
+wordpress_dns_name: "wordpress.{{ traefik_domain }}"

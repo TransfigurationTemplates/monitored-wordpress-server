@@ -71,7 +71,12 @@ server_software:
 service_control:
   - { state: "started", enabled: "yes", name: "docker" }
 
- 
+# Wordpress MySQL DB Name
+# mysql_db_host: "http://remotehost.com:3306"
+# default value allows the wordpress image to connect via the local docker network.
+# Type: String
+mysql_db_host: "mysql:3306"
+
 # Wordpress MySQL DB Name
 # Default value if not defined: "wordpressdb"
 # mysql_db_name: "exampledbname"

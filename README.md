@@ -2,7 +2,10 @@
 
 ## Table of Contents
 
+- [Wordpress Server Full Setup With Monitoring](#wordpress-server-full-setup-with-monitoring)
+  - [Table of Contents](#table-of-contents)
   - [What is this even?](#what-is-this-even)
+  - [Architecture Overview](#architecture-overview)
   - [What can I expect this thing to even do?](#what-can-i-expect-this-thing-to-even-do)
     - [Monitoring Stack](#monitoring-stack)
     - [Services](#services)
@@ -11,7 +14,9 @@
   - [How Do I Work This Thing?](#how-do-i-work-this-thing)
     - [List of Requirements](#list-of-requirements)
     - [The Actual Steps](#the-actual-steps)
-        - [Some Notes From Me](#some-notes-from-me)
+    - [Using 3rd Party MySQL DB's instead of the docker one.](#using-3rd-party-mysql-dbs-instead-of-the-docker-one)
+    - [Available Ansible Tags](#available-ansible-tags)
+      - [Some Notes From Me](#some-notes-from-me)
   - [Future To-Dos](#future-to-dos)
 
 ## What is this even?
@@ -79,6 +84,7 @@ grafana_admin_password | String | ❌ | Plaintext password to use for your grafa
 server_hostname | String | `wordpress-server` | The server hostname that will be set as part of installing the required resources.
 server_software | List | `['@development', 'nano', 'docker', 'python3', 'wget', 'epel-release']`| List of software to install to ensure that all required packages are installed you can add to this list or simply use the below default if necessary. If you add to this list, copy and paste the below list into your host_vars file and add to it to avoid any issues. Accepts YAML Formatted lists also.
 service_control | Dictionary | `{ state: "started", enabled: "yes", name: "docker" }` | List of services and if you are enabling or disabling them. You can  add to this list or use the default as below, if you add to this list, copy and paste the below list into your host_vars file and add to.
+mysql_db_host | String | `mysql:3306` | Wordpress Host address. if using a remote host specify it's IP or DNS connection with portt. Example: `192.168.1.169:3306` or `https://mydb.host.com:3306`
 mysql_db_name | String | `wordpressdb` | Wordpress MySQL DB Name. If you don't want to change it, leave it undefined.
 mysql_db_user | String | `wordpressdbuser` | Wordpress MySQL DB Username. If you don't want to change it, leave it undefined.
 mysql_db_password | String | `wordpressdbpass` | Wordpress MySQL DB Password. If I were you I'd put it into an ansible Vault variable. Don't use the vault_pass.txt in this repo tho, change the password in it first.
@@ -126,6 +132,21 @@ Well, to start with clone this repo. Then proceed to the below steps.
     - This will run a full configuration to install all dependencies and then deploy the dockerized services.
 
 6. Access the `port.*` domain endpoint and create your login. Confirm all of the containers are running under the containers tab, all should be green. if not, then you can check the logs by clicking the icon that looks like a log. Use the [above grid](#monitoring-stack) to read the docs to fix any startup errors. 
+
+### Using 3rd Party MySQL DB's instead of the docker one.
+
+In this example, I'll assume the architecture looks like so: 
+
+![](/docs/images/wordpressremotedb.png)
+
+1. Specify the following required variables with the connection details:
+   - `mysql_db_name`
+   - `mysql_db_user`
+   - `mysql_db_password`
+   - `mysql_db_host`
+
+2. To deploy the server without the included mysql run the playbook with the following command:
+   - `ansible-playbook -i inventory/hosts main.yml --tags="init" --skip-tags="mysql"`
 
 ### Available Ansible Tags
 

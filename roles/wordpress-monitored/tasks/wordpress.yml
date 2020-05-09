@@ -72,7 +72,7 @@
       WORDPRESS_DB_NAME: "{{ mysql_db_name }}"
       WORDPRESS_DB_USER: "{{ mysql_db_user }}"
       WORDPRESS_DB_PASSWORD: "{{ mysql_db_password }}"
-      WORDPRESS_DB_HOST: "mysql:3306"
+      WORDPRESS_DB_HOST: "{{ mysql_db_host }}"
     volumes:
       - "{{ container_data_dir }}/wordpress:/var/www/html"
     published_ports:

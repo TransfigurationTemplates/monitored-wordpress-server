@@ -40,6 +40,10 @@
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+    log_driver: "json-file"
+    log_options:
+      max-size: "10m"
+      max-file: "3"
     restart_policy: unless-stopped
   tags:
     - cadvisor

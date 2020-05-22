@@ -53,6 +53,10 @@
       traefik.frontend.rule: "Host:monitor.{{ traefik_domain }}"
       traefik.port: "8080"
       traefik.frontend.whiteList.sourceRange: "{{ management_whitelist_ip_range }}"
+    log_driver: "json-file"
+    log_options:
+      max-size: "10m"
+      max-file: "3"
     restart_policy: unless-stopped
   tags:
     - traefik

@@ -49,6 +49,10 @@
     volumes:
       - "{{ container_data_dir }}/mysql/db:/var/lib/mysql"
     restart_policy: unless-stopped
+    log_driver: "json-file"
+    log_options:
+      max-size: "10m"
+      max-file: "3"
   tags:
     - mysql
     - mysql_container
@@ -77,6 +81,10 @@
       - "{{ container_data_dir }}/wordpress:/var/www/html"
     published_ports:
       - 8392:80
+    log_driver: "json-file"
+    log_options:
+      max-size: "10m"
+      max-file: "3"
     restart_policy: unless-stopped
   tags:
     - wordpress

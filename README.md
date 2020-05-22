@@ -76,6 +76,7 @@ Variable Name | Type | Default Value |  Description
 --- | --- | --- | ---
 container_data_dir | String | `/data` | Default Data directory to store all container data with in.
 monitoring_docker_network | String | `monitoring` | The Docker network name for the monitoring containers.
+management_whitelist_ip_range | String | ❌ | The IP Range to lock access to for the monitoring and management layer. Example: `192.168.6.184/32`
 traefik_docker_network | String | `web` | The Docker network name for traefik to watch.
 traefik_ssl_email | String | ❌ | Email address for SSL LETSENCRYPT Certificate.
 traefik_htpasswd | String | ❌ | Admin username and password for Traefik access. Generate this in the command line with: `htpasswd -nb admin <secure password here>` copy and paste the whole line.

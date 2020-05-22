@@ -25,6 +25,7 @@
       traefik.frontend.rule: "Host:port.{{ traefik_domain }}"
       traefik.docker.network: "{{ traefik_docker_network }}"
       traefik.port: "9000"
+      traefik.frontend.whiteList.sourceRange: "{{ management_whitelist_ip_range }}"
     volumes:
       - /data/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock

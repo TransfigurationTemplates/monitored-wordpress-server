@@ -52,6 +52,7 @@
     labels:
       traefik.frontend.rule: "Host:monitor.{{ traefik_domain }}"
       traefik.port: "8080"
+      traefik.frontend.whiteList.sourceRange: "{{ management_whitelist_ip_range }}"
     restart_policy: unless-stopped
   tags:
     - traefik

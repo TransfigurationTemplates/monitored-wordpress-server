@@ -17,6 +17,11 @@ container_data_dir: "/data"
 # Type: String
 monitoring_docker_network: "monitoring"
 
+# The IP Range to lock access to for the monitoring and management layer
+# Example open to the world:
+# management_whitelist_ip_range: "0.0.0.0/0"
+management_whitelist_ip_range: "0.0.0.0/0"
+
 # The Docker network name for traefik
 # If not specified it will be the default "web"
 # as below.

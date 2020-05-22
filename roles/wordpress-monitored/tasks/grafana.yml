@@ -82,6 +82,7 @@
       traefik.frontend.rule: "Host:grafana.{{ traefik_domain }}"
       traefik.docker.network: "{{ traefik_docker_network }}"
       traefik.port: "3000"
+      traefik.frontend.whiteList.sourceRange: "{{ management_whitelist_ip_range }}"
     user: '0'
     env:
       GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_password }}"

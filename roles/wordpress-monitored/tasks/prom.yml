@@ -34,6 +34,7 @@
       traefik.frontend.rule: "Host:prom.{{ traefik_domain }}"
       traefik.docker.network: "{{ traefik_docker_network }}"
       traefik.port: "9090"
+      traefik.frontend.whiteList.sourceRange: "{{ management_whitelist_ip_range }}"
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/etc/prometheus/data

@@ -25,6 +25,10 @@
     volumes:
       -  "{{ container_data_dir }}/victoriametrics:/victoria-metrics-data"
     restart_policy: unless-stopped
+    log_driver: "json-file"
+    log_options:
+      max-size: "10m"
+      max-file: "3"
   tags:
     - victoriametrics
     - victoriametrics_container

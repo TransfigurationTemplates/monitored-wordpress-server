@@ -16,6 +16,10 @@
       - 9100:9100
     volumes:
       - "/:/host:ro,rslave"
+    log_driver: "json-file"
+    log_options:
+      max-size: "10m"
+      max-file: "3"
     restart_policy: unless-stopped
   tags:
     - nodeexporter

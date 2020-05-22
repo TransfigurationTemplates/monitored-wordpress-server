@@ -22,8 +22,10 @@
     state: latest
 
 - name: allow files to be written to by docker containers
-  become: true
-  command: su -c "setenforce 0" 
+  lineinfile:
+    path: /etc/selinux/config
+    regexp: '^SELINUX='
+    line: SELINUX=permissive
 
 - name: Install docker with pip
   pip:
